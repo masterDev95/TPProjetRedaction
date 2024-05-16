@@ -1,8 +1,6 @@
 const express = require('express');
-const tools = require('../tools');
 const morgan = require('morgan');
-const path = require('path');
-const { db } = require('../database');
+const queries = require('../queries');
 const bodyParser = require('body-parser');
 
 const router = express.Router()
@@ -18,59 +16,108 @@ router.use((req, res, next) => {
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
+//#region Constants
+//-------------------------------------------------------------------------------------------------------
+const handleServerError = (res, error) => { res.status(500).send({ "Error": "Internal Server Error", "Message": error.message }); };
+const handleMissingFieldsError = (res) => { res.status(400).send({ "Error": "Bad Request", "Message": "Missing required fields" }); };
+const handleExistingBookError = (res) => { res.status(409).send({ "Error": "Conflict", "Message": "A book with the same name already exists" }); };
+const handleInvalidQuantityError = (res) => { res.status(400).send({ "Error": "Bad Request", "Message": "Invalid quantity" }); };
+const handleBookNotFound = (res) => { res.status(404).send({ "Error": "Not Found", "Message": "Book not found" }); };
+const handleBookAdded = (res) => { res.status(201).send({ "Success": "Book inserted successfully" }); };
+const handleBookInsertFailed = (res) => { res.status(500).send({ "Error": "Failed to insert book" }); };
+const handleDecreaseQuantityGreaterThanAvailable = (res) => { res.status(400).send({ "Error": "Bad Request", "Message": "Quantity to decrease is greater than available quantity" }); };
+//-------------------------------------------------------------------------------------------------------
 
-//------------------------------------------------------------------
-//--------------------BOOKS-----------------------------------------
-//------------------------------------------------------------------
+//#region Get All Books
 
+//Recupération de tout les livres dans la bdd
 router.get('/', async (req, res) => {
   try {
-    const rows = await new Promise((resolve, reject) => {
-      db.all('SELECT * FROM livre', (err, rows) => {
-        err ? reject(err) : resolve(rows);
-      });
-    });
-    res.status(200).send(rows);
+    res.status(200).send(await queries.getAllBooks());
   } catch (error) {
-    res.status(500).send({ "Error": "Internal Server Error", "Message": error.message });
+    handleServerError(res, error);
   }
 });
 
+//#region Post one book
 
+//Permet l'ajout dans la base de donnée d'un livre
 router.post('/', async (req, res) => {
   try {
     const { nom, auteur, genre, description, quantity } = req.body;
 
     // On verifie que tout les champs existent
     if (!nom || !auteur || !genre || !description || !quantity) {
-      return res.status(400).send({ "Error": "Bad Request", "Message": "Missing required fields" });
+      return handleMissingFieldsError(res);
     }
 
-    // On verifie si le le livre existe deja
-    const existingBook = await new Promise((resolve, reject) => {
-      db.get('SELECT * FROM livre WHERE nom = ?', [nom], (err, row) => {
-        err ? reject(err) : resolve(row);});
-    });
-
+    const existingBook = await queries.getBookByName(nom);
     if (existingBook) {
-      return res.status(409).send({ "Error": "Conflict", "Message": "A book with the same name already exists" });
+      return handleExistingBookError(res);
     }
 
-    // Insérer les données dans la table "livre"
-    const result = await new Promise((resolve, reject) => {
-      const insertQuery = db.prepare("INSERT INTO livre (nom, auteur, genre, description, quantity) VALUES (?, ?, ?, ?, ?)");
-      insertQuery.run(nom, auteur, genre, description, quantity, (err) => {
-        err ? reject(err) : resolve({ "Success": true, "Message": "Book inserted successfully" });
-      });
-    });
+    const isSuccess = await queries.insertBook(nom, auteur, genre, description, quantity);
+    isSuccess ? handleBookAdded(res) : handleBookInsertFailed(res);
 
-    res.status(201).send(result);
   } catch (error) {
-    res.status(500).send({ "Error": "Internal Server Error", "Message": error.message });
+    handleServerError(res, error);
+  }
+});
+
+//#region Increase book quantity
+
+// Permet d'augmenter la quantité d'un livre
+router.put('/increase', async (req, res) => {
+  try {
+    const { id,quantityIncrement  } = req.body;
+    if (!id || !quantityIncrement ) {
+      return handleMissingFieldsError(res);
+    }
+    // Check si la quantité est un nombre positif
+    if (isNaN(quantityIncrement ) || parseInt(quantityIncrement ) <= 0) {
+      return handleInvalidQuantityError(res);
+    }
+
+    const book = await queries.getBookById(id);
+    if (!book) {
+      return handleBookNotFound(res);
+    }
+
+    const updatedBook = await queries.updateBookQuantity(queries.UpdateOperation.INCREASE, quantityIncrement , id);
+    res.status(200).send(updatedBook);
+  } catch (error) {
+    handleServerError(res, error);
+  }
+});
+
+//#region Decrease book quantity
+
+// Permet de diminuer la quantité d'un livre
+router.put('/decrease', async (req, res) => {
+  try {
+    const { id,quantityDecrement   } = req.body;
+    if (!id || !quantityDecrement ) {
+      return handleMissingFieldsError(res);
+    }
+    // Check si la quantité est un nombre positif
+    if (isNaN(quantityDecrement ) || parseInt(quantityDecrement ) <= 0) {
+      return handleInvalidQuantityError(res);
+    }
+
+    const book = await queries.getBookById(id);
+    if (!book) {
+      return handleBookNotFound(res);
+    }
+    // Check si la quantité à réduire est supérieure à la quantité disponible
+    if (quantityDecrement  > book.quantity) {
+      return handleDecreaseQuantityGreaterThanAvailable(res);
+    }
+    const updatedBook = await queries.updateBookQuantity(queries.UpdateOperation.DECREASE, quantityDecrement , id);
+    res.status(200).send(updatedBook);
+  } catch (error) {
+    handleServerError(res, error);
   }
 });
 
 
-
 module.exports = router;
-
