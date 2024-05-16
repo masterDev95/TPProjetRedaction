@@ -1,0 +1,21 @@
+{
+    "books": [
+      {
+        "title": "Book1",
+        "author": "L'auteur",
+        "year": 1949,
+        "genre": "le genre",
+        "available": true,
+        "quantity": 5
+      },
+      {
+        "title": "Book2",
+        "author": "L'auteur2",
+        "year": 1987,
+        "genre": "le genre2",
+        "available": true,
+        "quantity": 3
+      }
+    ]
+  }
+  
