@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <title>Bibliothèque</title>
   <link rel="stylesheet" href="./src/styles/style.css">
+  <script src="./src/scripts/app.js"></script>
 </head>
 
 <body>
 <!-- Header -->
-<header class="flex justify-between px-16 py-8">
+<header class="flex justify-between px-16 py-8 bg-purple-300 mb-8">
   <h1 class="text-3xl">Bibliothèque</h1>
 
   <!-- Navigation -->
@@ -28,22 +29,20 @@
   <section>
     <label>
       Rechercher un livre:
-      <input type="text" name="search">
+      <input type="text" name="search" autocomplete="off">
     </label>
   </section>
 
   <section>
     <h2>Résultats</h2>
 
-    <ul>
-      <li>
-        <h3>Titre</h3>
-        <p>Nom</p>
-        <p>Genre</p>
-        <p>Desc</p>
-        <p>Qte</p>
-      </li>
-    </ul>
+    <div class="grid grid-cols-5 w-11/12 m-auto" id="table">
+      <h3>Titre</h3>
+      <p>Nom</p>
+      <p>Genre</p>
+      <p>Desc</p>
+      <p>Qte</p>
+    </div>
   </section>
 </main>
 
