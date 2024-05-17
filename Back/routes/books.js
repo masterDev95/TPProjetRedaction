@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const queries = require('../queries');
 const bodyParser = require('body-parser');
-
+const cors = require('cors');
 const router = express.Router()
 const logger = morgan(':method :url (:status)');
 
@@ -15,7 +15,12 @@ router.use((req, res, next) => {
 });
 
 router.use(bodyParser.urlencoded({ extended: true }));
-
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+router.use(cors(corsOptions));
 //#region Constants
 //-------------------------------------------------------------------------------------------------------
 const handleServerError = (res, error) => { res.status(500).send({ "Error": "Internal Server Error", "Message": error.message }); };
