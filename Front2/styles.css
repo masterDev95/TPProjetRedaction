@@ -3,6 +3,7 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    background-image: url('https://png.pngtree.com/background/20230522/original/pngtree-an-old-style-library-with-shelves-full-of-books-picture-image_2693166.jpg');
 }
 
 .container {
@@ -12,6 +13,9 @@ body {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    height: 750px;
+    overflow-y: auto;
+    background-color: #88360ed9;
 }
 
 h1 {
@@ -19,9 +23,24 @@ h1 {
     margin-bottom: 20px;
 }
 
-.books-container {
+.search-container {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.books-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
 }
 
@@ -30,5 +49,23 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
-    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.book-card h2 {
+    font-size: 20px;
+    margin: 0 0 10px 0;
+}
+
+.book-card p {
+    margin: 5px 0;
+    font-size: 14px;
 }

@@ -6,13 +6,9 @@
 
 input {
   border-bottom: 1px solid #c5c5c5;
-
-  &:focus {
-    outline: none;
-    border-bottom: 1px solid #005eff;
-  }
 }
 
-#table > * {
-  border: 1px solid #c5c5c5;
+input:focus {
+  outline: none;
+  border-bottom: 1px solid #005eff;
 }

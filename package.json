@@ -10,7 +10,9 @@
     "test": "jest"
   },
   "devDependencies": {
+    "geckodriver": "^4.4.0",
     "jest": "^29.7.0",
+    "selenium-webdriver": "^4.21.0",
     "supertest": "^7.0.0"
   }
 }
