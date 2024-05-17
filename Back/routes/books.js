@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const router = express.Router()
 const logger = morgan(':method :url (:status)');
 
-// Avec Morgan on affiche les logs des requetes
+// Avec Morgan on affiche les logs des requetes dans la console
 router.use((req, res, next) => {
   logger(req, res, () => {
     console.log(`${req.method} ${req.url} (${res.statusCode})`);
