@@ -8,13 +8,13 @@
 
 <body>
 <!-- Header -->
-<header>
+<header class="flex justify-between px-16 py-8">
   <h1 class="text-3xl">Bibliothèque</h1>
 
   <!-- Navigation -->
   <nav>
     <!-- Menu -->
-    <ul>
+    <ul class="flex gap-4">
       <li><a href="index.php">Accueil</a></li>
       <li><a href="livres.php">Livres</a></li>
       <li><a href="auteurs.php">Auteurs</a></li>
@@ -25,13 +25,30 @@
 
 <!-- Main -->
 <main>
-  <h2>Accueil</h2>
-  <p>Bienvenue sur le site de la bibliothèque de l'ESGI.</p>
+  <section>
+    <label>
+      Rechercher un livre:
+      <input type="text" name="search">
+    </label>
+  </section>
+
+  <section>
+    <h2>Résultats</h2>
+
+    <ul>
+      <li>
+        <h3>Titre</h3>
+        <p>Nom</p>
+        <p>Genre</p>
+        <p>Desc</p>
+        <p>Qte</p>
+      </li>
+    </ul>
+  </section>
 </main>
 
 <!-- Footer -->
 <footer>
-  <p>&copy; 2020 - ESGI</p>
 </footer>
 </body>
 </html>
