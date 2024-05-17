@@ -18,9 +18,8 @@ function initDatabase() {
       });
     });
   }
-  
 
 module.exports = {
   db,
-  initDatabase
+  initDatabase,
 };
