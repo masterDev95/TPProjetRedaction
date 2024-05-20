@@ -35,6 +35,44 @@ Votre navigateur devrait alors s'ouvrir il faudra choisir le dossier Front2
 
 Grace à la librairie Morgan les logs s'afficheront en direct avec les appels API dans le terminal.
 
+## Gerer les livres
+
+N'ayant pas mis en place dans le front des boutons pour intéragir directement il faudra utiliser postman ou des requêtes curl afin de gérer les livres:
+
+> Recuperer les livres
+
+```curl
+curl --location 'http://0.0.0.0:3000/books'
+```
+> Ajouter un livre
+
+```curl
+curl --location 'http://0.0.0.0:3000/books' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'nom=NomLivre' \
+--data-urlencode 'auteur=NomAuteur' \
+--data-urlencode 'genre=Genre' \
+--data-urlencode 'description=blabla' \
+--data-urlencode 'quantity=3'
+```
+> Ajouter une quantité à un livre via son id 
+
+```curl
+curl --location --request PUT 'http://0.0.0.0:3000/books/increase' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'id=1' \
+--data-urlencode 'quantityIncrement=2'
+```
+
+> Diminuer une quantité à un livre via son id 
+
+```curl
+curl --location --request PUT 'http://0.0.0.0:3000/books/decrease' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'id=1' \
+--data-urlencode 'quantityDecrement=2'
+```
+
 ## Tests
 
 Avant de commencer dans Front2/tests/front.test.js il faudra modifier l'adresse du driver firefox par la votre afin de lancer Selenium:
